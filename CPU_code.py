@@ -50,10 +50,10 @@ class Individual:
         movements = step_size[:, np.newaxis] * np.array(direction).T
         # Repeat each movement for the corresponding waiting time
         repeated_movements = np.repeat(movements, filtered_waiting_time, axis=0)
-        # add initial position to repeated_movements
-        repeated_movements = np.vstack((self.ini_position,repeated_movements))
         # Calculate positions
-        positions = np.cumsum(repeated_movements, axis=0)[:time]
+        where_are_equal = np.equal(repeated_movements[1:,0],repeated_movements[:-1,0])
+        changes_in_positions= np.where(where_are_equal[:,np.newaxis],np.zeros(repeated_movements.shape)[1:],repeated_movements[1:])
+        positions = np.cumsum(np.vstack((self.ini_position,changes_in_positions)), axis=0)[:time]
         # Update positions
         self.positions=positions    
 
@@ -118,7 +118,7 @@ hist, bin_edges = np.histogram(data, bins=10, density=True)
 #ind = Individual(initial_position=[0,0],waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
 time_ = 2*60
 #ind.move(time=time)
-n_ind= 50000
+n_ind= 5
 initial_positions= np.zeros((n_ind,2))
 population= Ensemble(n_ind,initial_positions,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
 start_cpu = time.perf_counter()
@@ -128,6 +128,6 @@ t_cpu = end_cpu - start_cpu
 print(f"CPU time: {t_cpu:.2f} s")
 intersections= population.find_intersections(t0=5,x0=2)
 population.plot(intersections)
-population.plot_network(intersections)
+#population.plot_network(intersections)
 
 
