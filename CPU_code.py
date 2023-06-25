@@ -3,6 +3,7 @@ import ipdb
 from scipy.spatial import distance_matrix
 from matplotlib import pyplot as plt
 import networkx as nx
+import time
 
 class Individual:
     def __init__(self, initial_position, waiting_time_dist, step_size_dist):
@@ -115,12 +116,16 @@ data = np.random.exponential(scale=1.0, size=1000)
 # Create a histogram of the data
 hist, bin_edges = np.histogram(data, bins=10, density=True)
 #ind = Individual(initial_position=[0,0],waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
-time = 2*60
+time_ = 2*60
 #ind.move(time=time)
-n_ind= 5
+n_ind= 50000
 initial_positions= np.zeros((n_ind,2))
 population= Ensemble(n_ind,initial_positions,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
-population.move(time)
+start_cpu = time.perf_counter()
+population.move(time_)
+end_cpu = time.perf_counter()
+t_cpu = end_cpu - start_cpu
+print(f"CPU time: {t_cpu:.2f} s")
 intersections= population.find_intersections(t0=5,x0=2)
 population.plot(intersections)
 population.plot_network(intersections)
