@@ -1,5 +1,4 @@
 import numpy as np
-import ipdb
 from scipy.spatial import distance_matrix
 from matplotlib import pyplot as plt
 import networkx as nx
@@ -111,23 +110,23 @@ class Ensemble:
 
 
     
-# Generate random numbers from an exponential distribution
-data = np.random.exponential(scale=1.0, size=1000)
-# Create a histogram of the data
-hist, bin_edges = np.histogram(data, bins=10, density=True)
-#ind = Individual(initial_position=[0,0],waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
-time_ = 2*60
-#ind.move(time=time)
-n_ind= 30000
-initial_positions= np.zeros((n_ind,2))
-population= Ensemble(n_ind,initial_positions,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
-start_cpu = time.perf_counter()
-population.move(time_)
-end_cpu = time.perf_counter()
-t_cpu = end_cpu - start_cpu
-print(f"CPU time: {t_cpu:.2f} s")
-#intersections= population.find_intersections(t0=5,x0=2)
-#population.plot(intersections)
-#population.plot_network(intersections)
+# # Generate random numbers from an exponential distribution
+# data = np.random.exponential(scale=1.0, size=1000)
+# # Create a histogram of the data
+# hist, bin_edges = np.histogram(data, bins=10, density=True)
+# #ind = Individual(initial_position=[0,0],waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
+# time_ = 2*60
+# #ind.move(time=time)
+# n_ind= 30000
+# initial_positions= np.zeros((n_ind,2))
+# population= Ensemble(n_ind,initial_positions,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
+# start_cpu = time.perf_counter()
+# population.move(time_)
+# end_cpu = time.perf_counter()
+# t_cpu = end_cpu - start_cpu
+# print(f"CPU time: {t_cpu:.2f} s")
+# #intersections= population.find_intersections(t0=5,x0=2)
+# #population.plot(intersections)
+# #population.plot_network(intersections)
 
 

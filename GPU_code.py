@@ -114,23 +114,23 @@ class Ensemble:
         self.positions = cp.array(ensamble_positions)
         
 
-#Tests 
+# #Tests 
 
-data = cp.random.exponential(scale=1, size=1000)
-hist, bin_edges = cp.histogram(data, bins=10, density=True)
+# data = cp.random.exponential(scale=1, size=1000)
+# hist, bin_edges = cp.histogram(data, bins=10, density=True)
 
-time = 2*60
+# time = 2*60
 
-n_ind= 30000
-initial_positions= cp.zeros((n_ind,2))
+# n_ind= 30000
+# initial_positions= cp.zeros((n_ind,2))
 
-population= Ensemble(n_ind,initial_positions,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
-start_gpu = cp.cuda.Event()
-start_gpu.record()
-ensamble_positions = population.move(time) 
+# population= Ensemble(n_ind,initial_positions,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
+# start_gpu = cp.cuda.Event()
+# start_gpu.record()
+# ensamble_positions = population.move(time) 
 
-end_gpu = cp.cuda.Event()
-end_gpu.record()
-end_gpu.synchronize()
-t_gpu = cp.cuda.get_elapsed_time(start_gpu, end_gpu)
-print("Tiempo GPU: ", round(t_gpu/1000,1),"s for N = ",n_ind)
+# end_gpu = cp.cuda.Event()
+# end_gpu.record()
+# end_gpu.synchronize()
+# t_gpu = cp.cuda.get_elapsed_time(start_gpu, end_gpu)
+# print("Tiempo GPU: ", round(t_gpu/1000,1),"s for N = ",n_ind)
