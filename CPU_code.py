@@ -2,7 +2,7 @@ import numpy as np
 from scipy.spatial import distance_matrix
 from matplotlib import pyplot as plt
 import networkx as nx
-import time
+
 
 class Individual:
     def __init__(self, initial_position, waiting_time_dist, step_size_dist):

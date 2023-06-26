@@ -1,7 +1,5 @@
 import cupy as cp
 import cupyx as cpx
-from matplotlib import pyplot as plt
-import networkx as nx
 import numpy as np
 
 
