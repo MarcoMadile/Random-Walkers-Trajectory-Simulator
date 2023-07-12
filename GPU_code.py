@@ -1,6 +1,7 @@
 import cupy as cp
-import cupyx as cpx
 import numpy as np
+import cupyx as cpx
+import concurrent.futures
 
 
 
@@ -83,9 +84,9 @@ class Ensemble:
         return cp.random.choice(self.step_size_edges,size=size_, p=self.step_size_hist)
 
 
-    def move(self, time):
+    def move(self, time_,numba_paralel=False):
         # Generate random directions, step sizes, and waiting times for all individuals at once
-        posible_size_w_t = cp.int(4*time/self.waiting_time_mean) 
+        posible_size_w_t = cp.int(4*time_/self.waiting_time_mean) 
         thetas = cp.random.uniform(0, 2 * cp.pi, size=(self.n, posible_size_w_t))
 
         directions = cp.array([cp.cos(thetas), cp.sin(thetas)])
@@ -102,31 +103,43 @@ class Ensemble:
         #now we use numpy functions once calculated all the movements
         reshaped_result_movements_np = cp.asnumpy(reshaped_result_movements)
         waiting_times_np = cp.asnumpy(waiting_times).astype(int)
-        ensamble_positions = []
-        for i in range(self.n):
+        def process_individual(i):
             repeated_movements_individual = np.repeat(reshaped_result_movements_np[i], waiting_times_np[i], axis=0)
             where_are_equal = np.equal(repeated_movements_individual[1:,0],repeated_movements_individual[:-1,0])
             changes_in_positions= np.where(where_are_equal[:,np.newaxis],np.zeros(repeated_movements_individual.shape)[1:],repeated_movements_individual[1:])
-            positions= np.cumsum(changes_in_positions, axis=0)[:time]
-            ensamble_positions.append(positions)
-        self.positions = cp.array(ensamble_positions)
+            positions= np.cumsum(changes_in_positions, axis=0)[:time_]
+            return positions
+        ensamble_positions = []
+        if numba_paralel:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                ensamble_positions = list(executor.map(process_individual, range(self.n)))
+            self.positions = ensamble_positions
+        else: 
+            for i in range(self.n):
+                repeated_movements_individual = np.repeat(reshaped_result_movements_np[i], waiting_times_np[i], axis=0)
+                where_are_equal = np.equal(repeated_movements_individual[1:,0],repeated_movements_individual[:-1,0])
+                changes_in_positions= np.where(where_are_equal[:,np.newaxis],np.zeros(repeated_movements_individual.shape)[1:],repeated_movements_individual[1:])
+                positions= np.cumsum(changes_in_positions, axis=0)[:time_]
+                ensamble_positions.append(positions)
+            self.positions = cp.array(ensamble_positions)
         
 
 # #Tests 
 
-# data = cp.random.exponential(scale=1, size=1000)
-# hist, bin_edges = cp.histogram(data, bins=10, density=True)
+#data = cp.random.exponential(scale=1, size=1000)
+#hist, bin_edges = cp.histogram(data, bins=10, density=True)
 
-# time = 2*60
+#time = 2*60
 
-# n_ind= 30000
-# initial_positions= cp.zeros((n_ind,2))
+#n_ind= 30000
+#initial_positions= cp.zeros((n_ind,2))
 
-# population= Ensemble(n_ind,initial_positions,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
+#population= Ensemble(n_ind,initial_positions,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
 # start_gpu = cp.cuda.Event()
 # start_gpu.record()
-# ensamble_positions = population.move(time) 
-
+#population.move(time) 
+#ensamble_positions = population.positions
+#p.save("ensamble_positions.txt", ensamble_positions)
 # end_gpu = cp.cuda.Event()
 # end_gpu.record()
 # end_gpu.synchronize()

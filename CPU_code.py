@@ -69,8 +69,8 @@ class Ensemble:
         for i in range(self.n):
             self.individuals[i].move(time)
 
-    def find_intersections(self, t0, x0):
-        positions = np.array([ind.positions for ind in self.individuals])
+    def find_intersections(self, t0, x0,filter_t=0):
+        positions = np.array([ind.positions[filter_t:] for ind in self.individuals])
         n_individuals, time, _ = positions.shape
         intersections = []
         for i in range(n_individuals):
@@ -89,44 +89,51 @@ class Ensemble:
     def plot(self,intersections):
         fig, ax = plt.subplots()
         for i in range(self.n):
-            ax.plot(self.individuals[i].positions[:, 0], self.individuals[i].positions[:, 1], 'o-')
+            ax.plot(self.individuals[i].positions[:, 0], self.individuals[i].positions[:, 1], 'o-',alpha=0.5)
         for i, j, time1,time2 in intersections:
-
             # plot a line from individual i to individual j
             ax.plot([self.individuals[i].positions[time1, 0], self.individuals[j].positions[time2, 0]],[self.individuals[i].positions[time1, 1], self.individuals[j].positions[time2, 1]], 'k--')        
         plt.show()
 
-    def plot_network(self, intersections):
+    def plot_network(self, intersections,time_filter):
         # Create a graph with the individuals as nodes
         G = nx.Graph()
         for i in range(self.n):
             G.add_node(i)
         # Add the intersections as edges
-        for i, j, _, _ in intersections:
-            G.add_edge(i, j)
+        for i, j, t_1, t_2 in intersections:
+            if t_1>time_filter:
+                if t_2>time_filter:
+                    G.add_edge(i, j)
         # Plot the graph
-        nx.draw(G, node_size=100)
+        nx.draw(G, node_size=200,with_labels = True,node_color="lightblue")
         plt.show()
 
 
     
-# # Generate random numbers from an exponential distribution
+# # # Generate random numbers from an exponential distribution
 # data = np.random.exponential(scale=1.0, size=1000)
-# # Create a histogram of the data
+# # # Create a histogram of the data
 # hist, bin_edges = np.histogram(data, bins=10, density=True)
 # #ind = Individual(initial_position=[0,0],waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
 # time_ = 2*60
-# #ind.move(time=time)
-# n_ind= 30000
+# #ind.move(time=time_)
+# #xy = ind.positions
+# #x = xy[:,0]
+# #y = xy[:,1]
+# #plt.plot(x,y,"-o",alpha=0.5)
+# #plt.grid()
+# #plt.show()
+# n_ind= 13
 # initial_positions= np.zeros((n_ind,2))
 # population= Ensemble(n_ind,initial_positions,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
-# start_cpu = time.perf_counter()
+# # start_cpu = time.perf_counter()
 # population.move(time_)
-# end_cpu = time.perf_counter()
-# t_cpu = end_cpu - start_cpu
-# print(f"CPU time: {t_cpu:.2f} s")
-# #intersections= population.find_intersections(t0=5,x0=2)
-# #population.plot(intersections)
-# #population.plot_network(intersections)
+# # end_cpu = time.perf_counter()
+# # t_cpu = end_cpu - start_cpu
+# # print(f"CPU time: {t_cpu:.2f} s")
+# intersections= population.find_intersections(t0=5,x0=2)
+# population.plot(intersections)
+# population.plot_network(intersections,time_filter=30)
 
 
