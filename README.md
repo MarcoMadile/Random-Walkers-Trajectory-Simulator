@@ -22,7 +22,7 @@ This repository contains Python scripts for simulating the trajectories of rando
 
 ## Setup and Usage
 
-1. Clone this repository to your local machine using `git clone https://github.com/<your_username>/<repo_name>.git`.
+1. Clone this repository to your local machine using `git clone https://github.com/MarcoMadile/Random-Walkers-Trajectory-Simulator`.
 2. Install the necessary Python packages if not already installed. 
 
 ### Usage:
