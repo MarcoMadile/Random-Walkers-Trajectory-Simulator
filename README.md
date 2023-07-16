@@ -30,14 +30,7 @@ This repository contains Python scripts for simulating the trajectories of rando
 
 The CPU code should run on any system that supports Python and the necessary packages.
 
-## Known Issues and Limitations
-
-(Provide any known issues or limitations here)
-
-## License
-
-(Provide information about the project's license here)
 
 ## Contact
 
-(Your Name – Your Email – [Your GitHub Profile](https://github.com/<your_username>))
+Marco Madile Hjelt – marco.madile@ib.edu.ar – [MarcoMadile](https://github.com/MarcoMadile)
