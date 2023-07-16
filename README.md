@@ -39,7 +39,9 @@ ind_CPU.plot_trajectory() // this plots the trajectory of the individual
 
 You can accses the positions using ind_CPU.positions(). 
 
+
 If you want to make an Ensamble of individuals, you can do it like this:
+
 N_ind = 10 // number of individuals in the ensamble
 initial_pos = np.zeros((N_ind,2)) // or you can specify the initial positions of the individuals 
 ensamble_CPU = CPU_code.Ensemble(N_ind,initial_positions=initial_pos ,waiting_time_dist=[hist,bin_edges],step_size_dist=[hist,bin_edges])
@@ -48,7 +50,7 @@ intersections= population.find_intersections(t0=5,x0=2)// this finds the interse
 population.plot(intersections)// plots trayectorys and intersections
 population.plot_network(intersections,time_filter=30) // plot the network from intersection after the time_filter 
 
-
+Then run the script.
 
 ## System Requirements
 
